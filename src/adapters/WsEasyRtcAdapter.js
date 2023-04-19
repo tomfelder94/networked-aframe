@@ -15,20 +15,24 @@ class WsEasyRtcInterface extends NoOpAdapter {
     this.serverTimeRequests = 0;
     this.timeOffsets = [];
     this.avgTimeOffset = 0;
+    console.warn("WsEasyRtcAdapter: constructor called")
   }
 
   setServerUrl(url) {
     this.serverUrl = url;
     this.easyrtc.setSocketUrl(url);
+    console.warn("WsEasyRtcAdapter: sertServerUrl")
   }
 
   setApp(appName) {
     this.app = appName;
+    console.warn("WsEasyRtcAdapter: setApp")
   }
 
   setRoom(roomName) {
     this.room = roomName;
     this.easyrtc.joinRoom(roomName, null);
+    console.warn("WsEasyRtcAdapter: setRoom")
   }
 
   setWebRtcOptions(options) {
@@ -38,23 +42,26 @@ class WsEasyRtcInterface extends NoOpAdapter {
   setServerConnectListeners(successListener, failureListener) {
     this.connectSuccess = successListener;
     this.connectFailure = failureListener;
+    console.warn("WsEasyRtcAdapter: setServerConnectListeners")
   }
 
   setRoomOccupantListener(occupantListener){
     this.easyrtc.setRoomOccupantListener(function(roomName, occupants, primary) {
       occupantListener(occupants);
     });
+    console.warn("WsEasyRtcAdapter: setRoomOccupantListener")
   }
 
   setDataChannelListeners(openListener, closedListener, messageListener) {
     this.openListener = openListener;
     this.closedListener = closedListener;
     this.easyrtc.setPeerListener(messageListener);
+    console.warn("WsEasyRtcAdapter: setDataChannelListeners")
   }
 
   updateTimeOffset() {
     const clientSentTime = Date.now() + this.avgTimeOffset;
-
+    console.warn("WsEasyRtcAdapter: updateTimeOffset")
     return fetch(document.location.href, { method: "HEAD", cache: "no-cache" })
       .then(res => {
         var precision = 1000;
@@ -82,6 +89,7 @@ class WsEasyRtcInterface extends NoOpAdapter {
   }
 
   connect() {
+    console.warn("WsEasyRtcAdapter: connect")
     Promise.all([
       this.updateTimeOffset(),
       new Promise((resolve, reject) => {
@@ -93,12 +101,14 @@ class WsEasyRtcInterface extends NoOpAdapter {
   }
 
   shouldStartConnectionTo(clientId) {
+    console.warn("WsEasyRtcAdapter: shouldStartConnectionTo")
     return true;
   }
 
   startStreamConnection(clientId) {
     this.connectedClients.push(clientId);
     this.openListener(clientId);
+    console.warn("WsEasyRtcAdapter: startStreamConnection")
   }
 
   closeStreamConnection(clientId) {
@@ -107,40 +117,48 @@ class WsEasyRtcInterface extends NoOpAdapter {
       this.connectedClients.splice(index, 1);
     }
     this.closedListener(clientId);
+    console.warn("WsEasyRtcAdapter: closeStreamConnection")
   }
 
   sendData(clientId, dataType, data) {
     this.easyrtc.sendDataWS(clientId, dataType, data);
+    console.warn("WsEasyRtcAdapter: closeStreamConnection")
   }
 
   sendDataGuaranteed(clientId, dataType, data) {
     this.sendData(clientId, dataType, data);
+    console.warn("WsEasyRtcAdapter: closeStreamConnection")
   }
 
   broadcastData(dataType, data) {
     var destination = {targetRoom: this.room};
     this.easyrtc.sendDataWS(destination, dataType, data);
+    console.warn("WsEasyRtcAdapter: broadcastData")
   }
 
   broadcastDataGuaranteed(dataType, data) {
     this.broadcastData(dataType, data);
+    console.warn("WsEasyRtcAdapter: broadcastDataGuaranteed")
   }
 
   getConnectStatus(clientId) {
     var connected = this.connectedClients.indexOf(clientId) != -1;
-
+    console.warn("WsEasyRtcAdapter: getConnectStatus")
     if (connected) {
       return NAF.adapters.IS_CONNECTED;
     } else {
       return NAF.adapters.NOT_CONNECTED;
     }
+
   }
 
   getServerTime() {
+    console.warn("WsEasyRtcAdapter: getServerTime")
     return Date.now() + this.avgTimeOffset;
   }
 
   disconnect() {
+    console.warn("WsEasyRtcAdapter: disconnect")
     this.easyrtc.disconnect();
   }
 }
