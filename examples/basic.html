@@ -6,10 +6,12 @@
     <meta name="description" content="Basic Example — Networked-Aframe" />
 
     <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+    <!-- Croquet SDK -->
+    <script src="https://croquet.io/sdk/croquet-latest-pre.min.js"></script>
+    <script src="https://unpkg.com/simple-peer@5.9.0/simplepeer.min.js"></script>
 
     <!--   NAF basic requirements   -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.5.0/socket.io.slim.js"></script>
-    <script src="/easyrtc/easyrtc.js"></script>
     <script src="/dist/networked-aframe.js"></script>
 
     <!--    used for flying in this demo  -->
@@ -68,7 +70,7 @@
       networked-scene="
       room: basic;
       debug: true;
-      adapter: wseasyrtc;
+      adapter: croquet;
     "
     >
       <a-assets>

@@ -5,9 +5,11 @@
     <title>Video Streaming Example — Networked-Aframe</title>
     <meta name="description" content="Video Streaming Example — Networked-Aframe" />
 
+    <!-- Croquet SDK -->
+    <script src="https://croquet.io/sdk/croquet-latest-pre.min.js"></script>
+    <script src="https://unpkg.com/simple-peer@5.9.0/simplepeer.min.js"></script>
+
     <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.5.0/socket.io.slim.js"></script>
-    <script src="/easyrtc/easyrtc.js"></script>
     <script src="/dist/networked-aframe.js"></script>
     <script>
       // see issue https://github.com/networked-aframe/networked-aframe/issues/267
@@ -33,7 +35,7 @@
       networked-scene="
       room: basic-video;
       debug: true;
-      adapter: easyrtc;
+      adapter: croquet;
       audio: false;
       video: true;
     "
