@@ -21,6 +21,10 @@
     <!--   used to prevent players from spawning on top of each other so much  -->
     <script src="/js/spawn-in-circle.component.js"></script>
 
+    <!-- custom components -->
+    <script src="/js/aframe-video-controls.js"></script>
+    <script src="/js/aframe-host-controlled.js"></script>
+
     <script>
       // Called by Networked-Aframe when connected to server (optional)
       // (this api will change in future versions)
@@ -62,12 +66,37 @@
       };
     </script>
     <script src="https://unpkg.com/aframe-randomizer-components@^3.0.1/dist/aframe-randomizer-components.min.js"></script>
+
+    <style>
+      button {
+        z-index: 1000;
+        position: relative;
+        display: block;
+        background-color: #ccc;
+        border: none;
+        color: #fff;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .host-state {
+        background-color: green;
+      }
+
+      .viewer-state {
+        background-color: blue;
+      }
+    </style>
   </head>
   <body>
-    <button id="custom-event-button" style="z-index: 1000; position: absolute; display: block">
-      Send custom event
-    </button>
+    <button id="toggleButton" class="toggle-button viewer-state">Viewer</button>
+
+    <button id="custom-event-button">Send custom event</button>
+
     <a-scene
+      raycaster="objects:.clickable"
+      cursor="rayOrigin: mouse; fuseTimeout: 0;"
       networked-scene="
       room: basic;
       debug: true;
@@ -75,6 +104,8 @@
     "
     >
       <a-assets>
+        <!-- Video -->
+        <video id="video-src" src="video/video.mp4"></video>
         <!-- Templates -->
         <!-- Camera Rig / Player -->
         <template id="rig-template">
@@ -102,6 +133,17 @@
 
       <a-entity environment="preset:starry;groundColor:#000000;"></a-entity>
       <a-entity light="type:ambient;intensity:0.5"></a-entity>
+
+      <a-video
+        id="video"
+        src="#video-src"
+        width="1.77"
+        height="1"
+        video-controls
+        host-controlled
+        position="0 2 0"
+        class="clickable"
+      ></a-video>
 
       <!--   Here we declare only the local user's avatar, which we then broadcast to other users     -->
       <!--   The 'spawn-in-circle' component will set the position and rotation of #rig;
@@ -153,6 +195,27 @@
         console.warn(dataType);
         console.warn(data);
         console.warn(targetObj);
+      });
+
+      document.addEventListener('DOMContentLoaded', function () {
+        var toggleButton = document.getElementById('toggleButton');
+        var isHost = false;
+
+        toggleButton.addEventListener('click', function () {
+          if (isHost) {
+            toggleButton.innerHTML = 'Viewer';
+            toggleButton.classList.remove('host-state');
+            toggleButton.classList.add('viewer-state');
+            document.querySelector('#video').setAttribute('host-controlled', 'isHost: false');
+          } else {
+            toggleButton.innerHTML = 'Host';
+            toggleButton.classList.remove('viewer-state');
+            toggleButton.classList.add('host-state');
+            document.querySelector('#video').setAttribute('host-controlled', 'isHost: true');
+          }
+
+          isHost = !isHost;
+        });
       });
     </script>
   </body>
