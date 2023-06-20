@@ -64,6 +64,9 @@
     <script src="https://unpkg.com/aframe-randomizer-components@^3.0.1/dist/aframe-randomizer-components.min.js"></script>
   </head>
   <body>
+    <button id="custom-event-button" style="z-index: 1000; position: absolute; display: block">
+      Send custom event
+    </button>
     <a-scene
       networked-scene="
       room: basic;
@@ -133,6 +136,24 @@
       function onConnect() {
         console.log('onConnect', new Date());
       }
+
+      const dataType = 'button-click';
+
+      document.querySelector('#custom-event-button').addEventListener('click', (evt) => {
+        console.log('click');
+        const data = {
+          id: 'button',
+          date: new Date()
+        };
+        NAF.connection.broadcastDataGuaranteed(dataType, data);
+      });
+
+      NAF.connection.subscribeToDataChannel(dataType, (senderId, dataType, data, targetObj) => {
+        console.warn(senderId);
+        console.warn(dataType);
+        console.warn(data);
+        console.warn(targetObj);
+      });
     </script>
   </body>
 </html>
